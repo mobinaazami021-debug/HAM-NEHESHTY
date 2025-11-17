@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="fa">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>درسنامه — هم‌نهشتی مثلث‌ها</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="small-header">
+  <div class="container">
+    <a class="back" href="index.html">← بازگشت به صفحهٔ اصلی</a>
+    <h1>درسنامه: هم‌نهشتی مثلث‌ها</h1>
+  </div>
+</header>
+
+<main class="container content">
+  <section>
+    <h2>مفهوم هم‌نهشتی</h2>
+    <p>اگر با انجام جابه‌جایی، دوران یا تقارن بتوان یک مثلث را دقیقاً روی مثلث دیگر منطبق کرد، آن‌ها هم‌نهشت‌اند.</p>
+  </section>
+
+  <section>
+    <h2>معیارها (خلاصه)</h2>
+    <ul class="checklist">
+      <li><strong>SSS:</strong> سه ضلع برابر → هم‌نهشتی</li>
+      <li><strong>SAS:</strong> دو ضلع و زاویهٔ بینِ آن‌ها برابر → هم‌نهشتی</li>
+      <li><strong>ASA / AAS:</strong> دو زاویه + یک ضلع → هم‌نهشتی</li>
+      <li><strong>RHS:</strong> در مثلث‌های قائمه: وتر و یک ضلع مجاور برابر → هم‌نهشتی</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>اثبات‌های نمونه</h2>
+    <div class="card">
+      <h3>مثال: SSS</h3>
+      <p>فرض کنید در ΔABC و ΔDEF داریم AB=DE, BC=EF, CA=FD. چون سه ضلع برابرند، تنها یک مثلث با این سه طول ممکن است؛ بنابراین دو مثلث هم‌نهشت‌اند.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>ابزار تعاملی رسم و اندازه‌گیری</h2>
+    <p>نقاط را بکشید یا مختصات را تغییر دهید؛ طول‌ها و زاویه‌ها محاسبه و معیارهای هم‌نهشتی بررسی می‌شوند.</p>
+
+    <!-- ابزار تعاملی تعبیه شده با SVG و درگ -->
+    <div class="interactive-big" id="svgArea">
+      <!-- SVG دقیق: دو مثلث با نقاط قابل درگ -->
+      <svg id="svg" viewBox="0 0 800 420" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <marker id="dot" markerWidth="6" markerHeight="6" refX="3" refY="3">
+            <circle cx="3" cy="3" r="3" fill="#ff6b6b"></circle>
+          </marker>
+        </defs>
+
+        <!-- مثلث اول -->
+        <polygon id="tri1" points="100,300 220,120 360,300" fill="none" stroke="#1b9aaa" stroke-width="2"></polygon>
+        <circle id="A" class="drag" cx="100" cy="300" r="8" fill="#1b9aaa"></circle>
+        <text x="88" y="292" class="pt-label">A</text>
+        <circle id="B" class="drag" cx="220" cy="120" r="8" fill="#1b9aaa"></circle>
+        <text x="210" y="112" class="pt-label">B</text>
+        <circle id="C" class="drag" cx="360" cy="300" r="8" fill="#1b9aaa"></circle>
+        <text x="348" y="292" class="pt-label">C</text>
+
+        <!-- مثلث دوم -->
+        <polygon id="tri2" points="480,300 600,120 740,300" fill="none" stroke="#ff7b54" stroke-width="2"></polygon>
+        <circle id="D" class="drag2" cx="480" cy="300" r="8" fill="#ff7b54"></circle>
+        <text x="468" y="292" class="pt-label">D</text>
+        <circle id="E" class="drag2" cx="600" cy="120" r="8" fill="#ff7b54"></circle>
+        <text x="590" y="112" class="pt-label">E</text>
+        <circle id="F" class="drag2" cx="740" cy="300" r="8" fill="#ff7b54"></circle>
+        <text x="728" y="292" class="pt-label">F</text>
+
+        <!-- محلی برای نمایش خطوط کمکی -->
+        <g id="helpers"></g>
+      </svg>
+      <div class="controls">
+        <button id="resetBtn" class="btn">بازنشانی</button>
+        <button id="checkBtn" class="btn ghost">بررسی هم‌نهشتی</button>
+        <div id="measurements" class="measurements"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>پیشنهادهای کلاسی</h2>
+    <ul>
+      <li>گام‌به‌گام اثبات‌ها را آموزش دهید: داده‌ها → معیار → نتیجه.</li>
+      <li>دانش‌آموزان را گروه‌بندی کنید و هر گروه یک مسئلهٔ کاربردی حل کند.</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>نسخهٔ پیشرفتهٔ تعاملی — مناسب معلمان پایهٔ نهم</p>
+  </div>
+</footer>
+
+<script>
+// ===== JS برای درگ و اندازه‌گیری و بررسی معیارها =====
+// ساده و مستقل: بدون وابستگی به کتابخانهٔ خارجی
+
+(function(){
+  const svg = document.getElementById('svg');
+  const ptsIds1 = ['A','B','C'], ptsIds2 = ['D','E','F'];
+  const toNum = v=>Number(v.toFixed(2));
+  function getPt(id){ const c = document.getElementById(id); return {x: +c.getAttribute('cx'), y:+c.getAttribute('cy')}; }
+  function setPoly(id, pts){ document.getElementById(id).setAttribute('points', pts.map(p=>p.x+','+p.y).join(' ')); }
+  function setPt(id, p){ const el=document.getElementById(id); el.setAttribute('cx',p.x); el.setAttribute('cy',p.y); const t = el.nextElementSibling; if(t) { t.setAttribute('x', p.x-12); t.setAttribute('y', p.y-8);} }
+  function dist(p,q){ return Math.hypot(p.x-q.x, p.y-q.y); }
+  function angle(a,b,c){
+    const AB = dist(a,b), CB = dist(c,b), AC = dist(a,c);
+    const cosB = Math.max(-1, Math.min(1, (AB*AB + CB*CB - AC*AC) / (2*AB*CB)));
+    return Math.acos(cosB) * 180/Math.PI;
+  }
+
+  function updateMeasurements(){
+    const A=getPt('A'),B=getPt('B'),C=getPt('C'), D=getPt('D'),E=getPt('E'),F=getPt('F');
+    setPoly('tri1',[A,B,C]); setPoly('tri2',[D,E,F]);
+    const AB=dist(A,B), BC=dist(B,C), CA=dist(C,A);
+    const DE=dist(D,E), EF=dist(E,F), FD=dist(F,D);
+    const angA=angle(C,A,B), angB=angle(A,B,C), angC=angle(B,C,A);
+    const angD=angle(F,D,E), angE=angle(D,E,F), angF=angle(E,F,D);
+    const m = document.getElementById('measurements');
+    m.innerHTML = `<strong>طول‌ها (مثلث 1):</strong> AB=${toNum(AB)}, BC=${toNum(BC)}, CA=${toNum(CA)}<br>
+                   <strong>طول‌ها (مثلث 2):</strong> DE=${toNum(DE)}, EF=${toNum(EF)}, FD=${toNum(FD)}<br>
+                   <strong>زاویه‌ها (تقریب):</strong> A=${toNum(angA)}°, B=${toNum(angB)}°, C=${toNum(angC)}°<br>
+                   <strong>زاویه‌ها (مثلث 2):</strong> D=${toNum(angD)}°, E=${toNum(angE)}°, F=${toNum(angF)}°`;
+    // helpers: خطوط نشانگر یا تطبیق
+    const helpers = document.getElementById('helpers'); helpers.innerHTML = '';
+  }
+
+  // درگ ساده:
+  let dragElem = null, offset = {x:0,y:0};
+  function onPointerDown(e){ if(!e.target.classList.contains('drag') && !e.target.classList.contains('drag2')) return;
+    dragElem = e.target; const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const ctm = svg.getScreenCTM().inverse(); const local = pt.matrixTransform(ctm);
+    offset.x = local.x - +dragElem.getAttribute('cx'); offset.y = local.y - +dragElem.getAttribute('cy');
+    svg.addEventListener('pointermove', onPointerMove);
+  }
+  function onPointerMove(e){ if(!dragElem) return;
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const ctm = svg.getScreenCTM().inverse(); const local = pt.matrixTransform(ctm);
+    const nx = Math.max(20, Math.min(780, local.x - offset.x));
+    const ny = Math.max(20, Math.min(400, local.y - offset.y));
+    dragElem.setAttribute('cx', nx); dragElem.setAttribute('cy', ny);
+    // move label
+    const lab = dragElem.nextElementSibling; if(lab) { lab.setAttribute('x', nx-12); lab.setAttribute('y', ny-8); }
+    updateMeasurements();
+  }
+  function onPointerUp(){ dragElem = null; svg.removeEventListener('pointermove', onPointerMove); }
+
+  svg.addEventListener('pointerdown', onPointerDown);
+  window.addEventListener('pointerup', onPointerUp);
+
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    // مقادیر اولیه
+    setPt('A',{x:100,y:300}); setPt('B',{x:220,y:120}); setPt('C',{x:360,y:300});
+    setPt('D',{x:480,y:300}); setPt('E',{x:600,y:120}); setPt('F',{x:740,y:300});
+    updateMeasurements();
+  });
+
+  function approxEqual(a,b,eps=1.0){ return Math.abs(a-b) <= eps; }
+
+  document.getElementById('checkBtn').addEventListener('click', function(){
+    const A=getPt('A'),B=getPt('B'),C=getPt('C'), D=getPt('D'),E=getPt('E'),F=getPt('F');
+    const s1=[dist(A,B), dist(B,C), dist(C,A)].sort((a,b)=>a-b);
+    const s2=[dist(D,E), dist(E,F), dist(F,D)].sort((a,b)=>a-b);
+    const sMatch = s1.every((v,i)=>approxEqual(v,s2[i],1.5));
+    // زاویه‌محور SAS check: compare two sides and included angle
+    // برای نمایش نتیجهٔ پیشنهادی:
+    let msg = '';
+    if(sMatch) msg += '<p class="ok">نتیجهٔ پیشنهادی: معیار SSS برقرار به‌طور تقریب (بسته به تقریب).</p>';
+    // بررسی SAS: بررسی برابر بودن دو ضلع و زاویهٔ بین
+    // نمونه: AB==DE && AC==DF && angleA == angleD
+    const AB=dist(A,B), AC=dist(A,C), DE=dist(D,E), DF=dist(D,F);
+    const angA = angle(C,A,B), angD = angle(F,D,E);
+    if(approxEqual(AB,DE,1.5) && approxEqual(AC,DF,1.5) && approxEqual(angA,angD,3)) msg += '<p class="ok">همچنین SAS (دو ضلع و زاویهٔ بین) ممکن است.</p>';
+    if(!msg) msg = '<p class="warn">با تقریب فعلی معیار هم‌نهشتی واضحی پیدا نشد. نقاط را جابه‌جا کنید یا دقت اندازه‌ها را افزایش دهید.</p>';
+    const measurements = document.getElementById('measurements');
+    measurements.innerHTML = measurements.innerHTML + '<hr/>' + msg;
+  });
+
+  // init
+  document.getElementById('resetBtn').click();
+})();
+</script>
+</body>
+</html>

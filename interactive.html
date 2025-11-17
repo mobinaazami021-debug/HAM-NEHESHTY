@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="fa">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ابزار تعاملی — هم‌نهشتی</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="interactive-standalone container">
+  <h2>ابزار تعاملی دقیق — تغییر، اندازه‌گیری، و بررسی معیارها</h2>
+  <p class="muted">نقاط را لمس یا بکشید (mobile-friendly). از دکمهٔ ذخیره برای نگه‌داشتن تنظیمات استفاده کنید.</p>
+
+  <!-- از همان SVG استفاده شده در درسنامه اما با یکسری کنترل بیشتر -->
+  <div style="display:flex;gap:18px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:320px;">
+      <svg id="svg2" viewBox="0 0 800 420" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+    <div style="width:320px;">
+      <div id="infoPanel"></div>
+      <div style="margin-top:12px;">
+        <button id="saveState" class="btn">ذخیرهٔ وضعیت</button>
+        <button id="loadState" class="btn ghost">بارگذاری وضعیت</button>
+        <button id="reset2" class="btn">بازنشانی</button>
+      </div>
+      <div style="margin-top:12px;">
+        <h4>نتیجهٔ بررسی</h4>
+        <div id="resultCheck"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ساخت SVG برنامه‌ریزی‌شده با نقاط و درگ (کد خلاصه‌شده)
+(function(){
+  const svg = document.getElementById('svg2');
+  svg.innerHTML = `
+    <defs><style>.lab{font-size:12px;font-family:Vazirmatn;}</style></defs>
+    <polygon id="t1" fill="none" stroke="#1b9aaa" stroke-width="2"></polygon>
+    <polygon id="t2" fill="none" stroke="#ff7b54" stroke-width="2"></polygon>
+    <g id="pts"></g>
+  `;
+  const pts = {
+    A:{x:100,y:300,color:'#1b9aaa'},B:{x:220,y:120,color:'#1b9aaa'},C:{x:360,y:300,color:'#1b9aaa'},
+    D:{x:480,y:300,color:'#ff7b54'},E:{x:600,y:120,color:'#ff7b54'},F:{x:740,y:300,color:'#ff7b54'}
+  };
+  function render(){
+    const g = document.getElementById('pts');
+    g.innerHTML = '';
+    for(const k in pts){
+      const p = pts[k];
+      g.innerHTML += `<circle id="${k}" class="drag" cx="${p.x}" cy="${p.y}" r="8" fill="${p.color}"></circle>
+                      <text x="${p.x-12}" y="${p.y-10}" class="lab">${k}</text>`;
+    }
+    const t1 = document.getElementById('t1'), t2=document.getElementById('t2');
+    t1.setAttribute('points', ${pts.A.x},${pts.A.y} ${pts.B.x},${pts.B.y} ${pts.C.x},${pts.C.y});
+    t2.setAttribute('points', ${pts.D.x},${pts.D.y} ${pts.E.x},${pts.E.y} ${pts.F.x},${pts.F.y});
+    updateInfo();
+  }
+  function getPt(k){ return {x:+pts[k].x, y:+pts[k].y}; }
+  function dist(a,b){ return Math.hypot(a.x-b.x,a.y-b.y); }
+  function angle(a,b,c){
+    const AB = dist(a,b), CB = dist(c,b), AC = dist(a,c);
+    const cosB = Math.max(-1,Math.min(1,(AB*AB + CB*CB - AC*AC)/(2*AB*CB)));
+    return Math.acos(cosB)*180/Math.PI;
+  }
+  function updateInfo(){
+    const A=getPt('A'),B=getPt('B'),C=getPt('C'),D=getPt('D'),E=getPt('E'),F=getPt('F');
+    const AB=dist(A,B), BC=dist(B,C), CA=dist(C,A);
+    const DE=dist(D,E), EF=dist(E,F), FD=dist(F,D);
+    document.getElementById('infoPanel').innerHTML = <p><strong>طول‌ها:</strong><br>مثلث1: AB=${AB.toFixed(1)}, BC=${BC.toFixed(1)}, CA=${CA.toFixed(1)}<br>مثلث2: DE=${DE.toFixed(1)}, EF=${EF.toFixed(1)}, FD=${FD.toFixed(1)}</p>;
+  }
+  // درگ
+  let active=null, ctm = null, offset={x:0,y:0};
+  svg.addEventListener('pointerdown', e=>{
+    if(e.target.tagName !== 'circle') return;
+    active = e.target.id; ctm = svg.getScreenCTM().inverse();
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const loc = pt.matrixTransform(ctm);
+    offset.x = loc.x - pts[active].x; offset.y = loc.y - pts[active].y;
+    svg.setPointerCapture(e.pointerId);
+  });
+  svg.addEventListener('pointermove', e=>{
+    if(!active) return;
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const loc = pt.matrixTransform(ctm);
+    pts[active].x = Math.max(20, Math.min(780, loc.x - offset.x));
+    pts[active].y = Math.max(20, Math.min(400, loc.y - offset.y));
+    render();
+  });
+  svg.addEventListener('pointerup', e=>{ active=null; });
+
+  document.getElementById('reset2').addEventListener('click', function(){
+    pts.A.x=100; pts.A.y=300; pts.B.x=220; pts.B.y=120; pts.C.x=360; pts.C.y=300;
+    pts.D.x=480; pts.D.y=300; pts.E.x=600; pts.E.y=120; pts.F.x=740; pts.F.y=300;
+    render();
+  });
+
+  function approx(a,b,eps=1.5){ return Math.abs(a-b)<=eps; }
+
+  document.getElementById('saveState').addEventListener('click', function(){
+    localStorage.setItem('congruenceState', JSON.stringify(pts));
+    alert('وضعیت ذخیره شد (localStorage).');
+  });
+  document.getElementById('loadState').addEventListener('click', function(){
+    const s = localStorage.getItem('congruenceState');
+    if(!s){ alert('ذخیره‌ای موجود نیست.'); return; }
+    const obj = JSON.parse(s);
+    for(const k in obj) pts[k]=obj[k];
+    render();
+  });
+
+  document.getElementById('svg2').addEventListener('dblclick', function(){
+    // بررسی معیارها و نمایش نتیجه
+    const A=getPt('A'),B=getPt('B'),C=getPt('C'),D=getPt('D'),E=getPt('E'),F=getPt('F');
+    const s1=[dist(A,B),dist(B,C),dist(C,A)].sort((a,b)=>a-b);
+    const s2=[dist(D,E),dist(E,F),dist(F,D)].sort((a,b)=>a-b);
+    const sss = s1.every((v,i)=>approx(v,s2[i]));
+    const angA = angle(C,A,B), angD = angle(F,D,E);
+    const sas = approx(dist(A,B),dist(D,E)) && approx(dist(A,C),dist(D,F)) && approx(angA,angD,3);
+    const out = document.getElementById('resultCheck');
+    let html = '';
+    if(sss) html += '<p class="ok">SSS برقرار (تقریب)</p>';
+    if(sas) html += '<p class="ok">SAS برقرار (تقریب)</p>';
+    if(!html) html = '<p class="warn">معیار واضحی یافت نشد. نقاط را تنظیم کنید.</p>';
+    out.innerHTML = html;
+  });
+
+  // init
+  render();
+})();
+</script>
+</body>
+</html>

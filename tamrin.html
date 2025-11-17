@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="fa">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تمرین‌ها و آزمون — هم‌نهشتی</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="small-header">
+  <div class="container">
+    <a class="back" href="index.html">← بازگشت</a>
+    <h1>تمرین‌ها و آزمون خودکار</h1>
+  </div>
+</header>
+
+<main class="container content">
+  <section>
+    <h2>تمرین سریع — تشخیص معیار</h2>
+    <form id="quiz1" class="quiz">
+      <div class="q">
+        <p>1) در دو مثلث: AB=DE, BC=EF, CA=FD. معیار چیست؟</p>
+        <label><input type="radio" name="q1" value="SSS"> SSS</label>
+        <label><input type="radio" name="q1" value="SAS"> SAS</label>
+        <label><input type="radio" name="q1" value="ASA"> ASA</label>
+      </div>
+
+      <div class="q">
+        <p>2) اگر ∠A=∠D و AB=DE و AC=DF و زاویهٔ A بین AB و AC باشد، معیار؟</p>
+        <label><input type="radio" name="q2" value="SSS"> SSS</label>
+        <label><input type="radio" name="q2" value="SAS"> SAS</label>
+        <label><input type="radio" name="q2" value="AAS"> AAS</label>
+      </div>
+
+      <button type="button" id="gradeBtn" class="btn">ارزیابی</button>
+      <div id="resultBox" class="resultBox"></div>
+    </form>
+  </section>
+
+  <section>
+    <h2>آزمون کوتاه (نمره‌دهی خودکار)</h2>
+    <p>آزمون شامل ۵ سؤال چندگزینه‌ای و یک سؤال نوشتاری (اثبات کوتاه)</p>
+    <form id="exam">
+      <!-- سه سوال چندگزینه ای به عنوان نمونه -->
+      <div class="q">
+        <p>1) کدام گزینه نشان‌دهندهٔ معیار SAS است؟</p>
+        <label><input type="radio" name="e1" value="a"> دو ضلع و زاویهٔ بینشان</label>
+        <label><input type="radio" name="e1" value="b"> سه ضلع</label>
+        <label><input type="radio" name="e1" value="c"> دو زاویه و ضلع بین</label>
+      </div>
+
+      <div class="q">
+        <p>2) اگر در دو مثلث қабыл: AB=DE و BC=EF و زاویهٔ B=E. معیار؟</p>
+        <label><input type="radio" name="e2" value="a"> SAS</label>
+        <label><input type="radio" name="e2" value="b"> SSS</label>
+        <label><input type="radio" name="e2" value="c"> ASA</label>
+      </div>
+
+      <div class="q">
+        <p>3) در مثلث قائم‌الزاویه اگر وتر‌ها برابر و یک ضلع مجاور برابر باشند، معیار؟</p>
+        <label><input type="radio" name="e3" value="a"> RHS</label>
+        <label><input type="radio" name="e3" value="b"> SAS</label>
+        <label><input type="radio" name="e3" value="c"> AAS</label>
+      </div>
+
+      <div class="q">
+        <p>4) (پرسش کوتاه — نوشتاری) در یک جمله بنویسید معیار SSS چیست؟</p>
+        <textarea name="e4" rows="3" placeholder="پاسخ خود را اینجا بنویسید"></textarea>
+      </div>
+
+      <div class="q">
+        <p>5) (پرسش کوتاه — اثبات) دو مثلث ΔABC و ΔDEF داریم AB=DE و BC=EF و CA=FD. یک اثبات کوتاه بنویسید.</p>
+        <textarea name="e5" rows="5" placeholder="پاسخ خود را بنویسید"></textarea>
+      </div>
+
+      <button type="button" id="submitExam" class="btn">ثبت و دریافت نمره</button>
+      <div id="examResult" class="resultBox"></div>
+    </form>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>آزمون خودکار — نتیجه در صفحه نمایش داده می‌شود. برای ذخیره نتایج از گزینهٔ پرینت مرورگر استفاده کنید.</p>
+  </div>
+</footer>
+
+<script>
+// JS برای نمره‌دهی سریع
+document.getElementById('gradeBtn').addEventListener('click', function(){
+  const q1 = document.querySelector('input[name="q1"]:checked');
+  const q2 = document.querySelector('input[name="q2"]:checked');
+  let score = 0, total = 2;
+  if(q1 && q1.value === 'SSS') score++;
+  if(q2 && q2.value === 'SAS') score++;
+  const box = document.getElementById('resultBox');
+  box.innerHTML = <p>نمرهٔ شما: ${score} / ${total}</p>;
+});
+
+document.getElementById('submitExam').addEventListener('click', function(){
+  // کلیدها:
+  const answers = { e1: 'a', e2: 'a', e3: 'a' };
+  let score = 0, total = 5;
+  for(let i=1;i<=3;i++){
+    const val = document.querySelector('input[name="e'+i+'"]:checked');
+    if(val && val.value === answers['e'+i]) score++;
+  }
+  // سوال نوشتاری (e4) — نیم‌نمره الگوریتمی بررسی کلیدواژه‌ها
+  const e4 = (document.querySelector('textarea[name="e4"]').value || '').toLowerCase();
+  if(e4.includes('سه') && (e4.includes('ضلع') || e4.includes('side') )) score += 0.5;
+
+  // e5 اثبات: بررسی حضور کلمات کلیدیِ داده→معیار→نتیجه
+  const e5 = (document.querySelector('textarea[name="e5"]').value || '').toLowerCase();
+  if(e5.includes('ab') || e5.includes('de') || e5.includes('ss') || e5.includes('sss') || (e5.includes('سه') && e5.includes('ضلع'))) score += 1;
+
+  // قابل اصلاح توسط معلم: سقف نمره را کنترل کن
+  if(score > total) score = total;
+  document.getElementById('examResult').innerHTML = `<h3>نتیجهٔ آزمون</h3>
+      <p>نمرهٔ خام: ${score} از ${total}</p>
+      <p>توضیح: سوالات چندگزینه‌ای دقیق نمره‌دهی شدند؛ پاسخ‌های نوشتاری با الگوریتم ساده بررسی شدند — برای تصحیح نهایی پیشنهاد می‌شود معلم پاسخ‌ها را بازبینی کند.</p>`;
+});
+</script>
+</body>
+</html>

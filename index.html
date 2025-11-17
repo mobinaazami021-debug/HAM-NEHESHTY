@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fa">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>آموزش هم‌نهشتی مثلث‌ها — پایهٔ نهم</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<!-- Navbar -->
+<header class="nav-wrap">
+  <div class="container nav">
+    <div class="brand">هم‌نهشتی — پایهٔ نهم</div>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html">خانه</a>
+      <a href="darsnameh.html">درسنامه</a>
+      <a href="tamrin.html">تمرین‌ها</a>
+      <a href="#interactive">ابزار تعاملی</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="menu">≡</button>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-text">
+      <h1>هم‌نهشتی مثلث‌ها — به‌زبان فارسی</h1>
+      <p>درسنامهٔ کامل، تمرین‌های خودارزیاب و ابزارهای تعاملی — طراحی شده برای معلمان و دانش‌آموزان پایهٔ نهم.</p>
+      <div class="cta">
+        <a href="darsnameh.html" class="btn">مطالعهٔ درسنامه</a>
+        <a href="tamrin.html" class="btn ghost">تمرین‌ها / آزمون</a>
+      </div>
+    </div>
+
+    <div class="hero-card">
+      <!-- کارت گرافیکی با SVG هنری -->
+      <svg viewBox="0 0 400 300" class="hero-svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="g" x1="0" x2="1">
+            <stop offset="0" stop-color="#00b4d8"/>
+            <stop offset="1" stop-color="#0077b6"/>
+          </linearGradient>
+        </defs>
+        <!-- مثلث هنری -->
+        <polygon points="40,260 200,60 360,260" fill="url(#g)" opacity="0.12"></polygon>
+        <polyline points="70,240 200,100 330,240" fill="none" stroke="#0077b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="200" cy="60" r="6" fill="#023e8a"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="container features">
+  <article class="feature">
+    <h3>درسنامهٔ جامع</h3>
+    <p>معرفی معیارهای SSS, SAS, ASA, AAS, RHS به‌همراه مثال و قالب اثبات.</p>
+  </article>
+  <article class="feature">
+    <h3>آزمون‌های خودکار</h3>
+    <p>تمرین‌های تعاملی با نمره‌دهی خودکار و بازخورد مرحله‌ای.</p>
+  </article>
+  <article class="feature">
+    <h3>ابزار تعاملی SVG</h3>
+    <p>تغییر مختصات، اندازه‌گیری طول و زاویه و بررسی معیارهای هم‌نهشتی.</p>
+  </article>
+</section>
+
+<!-- Interactive preview -->
+<section class="container interactive" id="interactive">
+  <h2>ابزار تعاملی (پیش‌نمایش)</h2>
+  <p class="muted">می‌توانید در صفحهٔ درسنامه ابزار کامل را ببینید و تست کنید.</p>
+  <div class="interactive-frame">
+    <!-- ساده قرار دادن iframe به صفحهٔ داخلی -->
+    <iframe src="interactive.html" title="ابزار تعاملی هم‌نهشتی" loading="lazy"></iframe>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>این سایت تولید شده برای آموزش هم‌نهشتی مثلث‌ها — مناسب کلاس‌های پایه نهم. ساخته شده توسط معلم — قابل ویرایش و شخصی‌سازی.</p>
+    <p class="muted">برای استفاده مدرسه‌ای: می‌توانید مخزن را فورک کرده و مطابق نیاز خود تغییر دهید.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
