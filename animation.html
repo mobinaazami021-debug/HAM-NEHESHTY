@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<title>انیمیشن مثلث‌های درخشان</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: #0d1b2a;
+        overflow: hidden;
+        font-family: "Vazirmatn", sans-serif;
+        color: white;
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 32px;
+        animation: fadeIn 2s ease-in-out;
+    }
+
+    .triangle {
+        width: 0;
+        height: 0;
+        border-left: 30px solid transparent;
+        border-right: 30px solid transparent;
+        border-bottom: 50px solid #00eaff;
+        position: absolute;
+        opacity: 0.8;
+        animation: float 5s infinite ease-in-out;
+        filter: drop-shadow(0 0 10px #00eaff);
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-40px) rotate(10deg); }
+        100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+</head>
+<body>
+
+<h1>✨ انیمیشن زیبای مثلث‌های شناور ✨</h1>
+
+<script>
+// ایجاد مثلث‌های تصادفی روی صفحه
+for (let i = 0; i < 25; i++) {
+    let tri = document.createElement("div");
+    tri.classList.add("triangle");
+
+    // موقعیت تصادفی
+    tri.style.left = Math.random() * window.innerWidth + "px";
+    tri.style.top = Math.random() * window.innerHeight + "px";
+
+    // اندازه تصادفی
+    let size = Math.random() * 40 + 20;
+    tri.style.borderLeft = size + "px solid transparent";
+    tri.style.borderRight = size + "px solid transparent";
+    tri.style.borderBottom = (size * 1.5) + "px solid #00eaff";
+
+    // سرعت تصادفی
+    tri.style.animationDuration = (Math.random() * 3 + 3) + "s";
+
+    document.body.appendChild(tri);
+}
+</script>
+
+</body>
+</html>
